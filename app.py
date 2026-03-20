@@ -1,6 +1,8 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from PIL import Image
 import torch
+
 torch.set_num_threads(1)
 
 from transformers import (
@@ -11,6 +13,7 @@ from transformers import (
 )
 
 app = Flask(__name__)
+CORS(app)  # 🔥 Habilita CORS global
 
 device = "cpu"
 
@@ -50,9 +53,7 @@ def vision():
 
     question = request.form.get("question")
 
-    # ==========================
-    # 🔹 SOLO DESCRIPCIÓN
-    # ==========================
+    # 🔹 DESCRIPCIÓN
     if not question:
         inputs = blip_processor(images=image, return_tensors="pt").to(device)
         output = blip_model.generate(**inputs)
@@ -63,9 +64,7 @@ def vision():
             "result": caption
         })
 
-    # ==========================
-    # 🔹 PREGUNTA (VQA)
-    # ==========================
+    # 🔹 PREGUNTA
     load_vilt()
 
     inputs = vilt_processor(image, question, return_tensors="pt").to(device)
