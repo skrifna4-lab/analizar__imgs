@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from PIL import Image
 import torch
+torch.set_num_threads(1)
 
 from transformers import (
     BlipProcessor,
